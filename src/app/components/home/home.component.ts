@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ShowcaseComponent } from "../showcase/showcase.component";
 
 @Component({
-  selector: 'root-home',
-  standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+    selector: 'root-home',
+    standalone: true,
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.scss',
+    imports: [ShowcaseComponent]
 })
 export class HomeComponent {
   title = 'Jelly Beans';
