@@ -4,7 +4,7 @@ export interface IOptions {
     headers?: HttpHeaders | {
         [header: string]: string | string[];
     };
-    observe: 'body';
+    observe?: 'body';
     context?: HttpContext;
     params?: HttpParams | {
         [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
@@ -20,5 +20,5 @@ export interface IOptions {
 export interface IPaginationParams {
     [key: string]: string | number | boolean | ReadonlyArray<string|number|boolean>;
     page: number;
-    itemPerPage: number;
+    itemsPerPage: number;
 }
