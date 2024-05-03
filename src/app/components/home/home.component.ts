@@ -12,7 +12,7 @@ import { IJellyBeansList } from '../../../interfaces/sweets';
 })
 export class HomeComponent {
   readonly ulrPath: string = "http://www.amazon.com";
-  jellyBeansList!: IJellyBeansList;
+  public jellyBeansList!: IJellyBeansList;
 
   constructor(private sweetsService: SweetsService){}
 
@@ -52,7 +52,7 @@ export class HomeComponent {
         { id: 26, name: 'Mango Tango', description: 'Exotic mango twist', quantity: 75, rating: 4.0, category: 'Jelly Beans', isFeatured: false },
         { id: 27, name: 'Raspberry Fizz', description: 'Bubbly raspberry sensation', quantity: 105, rating: 4.5, category: 'Jelly Beans', isFeatured: true },
       ]
-    };
+    } as IJellyBeansList;
 
 
     console.log(`service was called and response was: ${JSON.stringify(this.jellyBeansList.sweetsList)}`);
