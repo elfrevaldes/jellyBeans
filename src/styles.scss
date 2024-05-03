@@ -1,1 +1,89 @@
+@import './app/styles/veriables.scss';
 /* global styles */
+
+// A
+.align-center {
+    align-items: center;
+}
+
+// C
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+// F
+.full-center {
+    align-items: center;
+    justify-content: center;
+}
+
+// G
+.gap-1 {
+    gap: 1rem;
+}
+.gap-2 {
+    gap: 2rem;
+}
+
+// H
+html,
+body,
+p,
+h1,
+h2,
+h3,
+h4 {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body,
+app-home {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    display: none;
+}
+
+// J
+.justify-center {
+    align-items: center;
+}
+
+// M
+.mb-15 {
+    margin-bottom: 15px;
+}
+.mb-25 {
+    margin-bottom: 25px;
+}
+.mt-15 {
+    margin-top: 15px;
+}
+.mt-25 {
+    margin-top: 25px;
+}
+
+// R
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+// S
+.space-between {
+    justify-content: space-between;
+}
+
+// W
+.wrap {
+    flex-wrap: wrap;
+}
+
+

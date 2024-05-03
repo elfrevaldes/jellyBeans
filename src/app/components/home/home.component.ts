@@ -4,7 +4,7 @@ import { SweetsService } from '../../services/sweets.service';
 import { IJellyBeansList } from '../../../interfaces/sweets';
 
 @Component({
-    selector: 'root-home',
+    selector: 'app-home',
     standalone: true,
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss',
