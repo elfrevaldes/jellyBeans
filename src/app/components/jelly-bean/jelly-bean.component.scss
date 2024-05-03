@@ -1,8 +1,11 @@
 .wrapper {
-    width: 250px;
+    background-color: bisque;
+    width: 200px;
+    min-height: 220px;
+    border-radius: 15px;
     img {
-        aspect-ratio: 1;
         object-fit: contain;
+        max-width: 150px;
         width: 100%;
         border-radius: 15px;
         background-color: lightblue;
@@ -10,6 +13,7 @@
     .title {
         font-weight: 700;
         font-size:  1.5rem;
+        text-align: center;
     }
     .quantity-label{
         font-weight: 300;

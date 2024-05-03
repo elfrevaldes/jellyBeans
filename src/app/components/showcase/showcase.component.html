@@ -1,7 +1,12 @@
-<div class="column">
-    <div class="row wrap gap-1 space-between">
-        <ng-container *ngFor="let jellyBean of jellyBeansList.sweetsList">
-            <jelly-bean *ngIf="jellyBean.isFeatured" [jellyBean]="jellyBean" (someOutput)="onJellyBeanOutput($event)"></jelly-bean>
-        </ng-container>
-    </div>
+<div class="column full-center">
+    <p-carousel [value]="jellyBeansList.sweetsList" [numVisible]="3" [numScroll]="3" [circular]="true"
+        [responsiveOptions]="responsiveOptions" autoplayInterval="5000" class="centerCarrusel">
+        <ng-template let-item pTemplate="item">
+            <div class="row wrap gap-1 space-between">
+                <!-- Use item to access the current jelly bean -->
+                <jelly-bean *ngIf="item.isFeatured" [jellyBean]="item"
+                    (someOutput)="onJellyBeanOutput($event)"></jelly-bean>
+            </div>
+        </ng-template>
+    </p-carousel>
 </div>
