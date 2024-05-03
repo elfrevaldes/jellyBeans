@@ -13,6 +13,7 @@ import { IOptions } from '../../interfaces/http';
 */
 export class ApiService {
 
+  // We need a provider for ApiService for the dependency injection in appConfig
   constructor(private httpClient: HttpClient) {}
 
   get<T>(url: string, options: IOptions): Observable<T> {

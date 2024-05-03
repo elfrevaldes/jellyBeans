@@ -1,8 +1,11 @@
 @import './app/styles/veriables.scss';
-@import "primeng/resources/themes/lara-dark-purple/theme.css";
+@import "primeng/resources/themes/bootstrap4-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
 
 /* global styles */
+.p-rating-cancel-item {
+    display: none !important;
+}
 
 // A
 .align-center {
@@ -22,6 +25,9 @@
 }
 
 // G
+.gap-05 {
+    gap: 0.5rem;
+}
 .gap-1 {
     gap: 1rem;
 }

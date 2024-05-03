@@ -1,7 +1,7 @@
 <div class="column">
     <div class="row wrap gap-1 space-between">
         <ng-container *ngFor="let jellyBean of jellyBeansList.sweetsList">
-            <jelly-bean *ngIf="jellyBean.isFeatured" [jellyBean]="jellyBean"></jelly-bean>
+            <jelly-bean *ngIf="jellyBean.isFeatured" [jellyBean]="jellyBean" (someOutput)="onJellyBeanOutput($event)"></jelly-bean>
         </ng-container>
     </div>
 </div>

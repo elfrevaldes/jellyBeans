@@ -1,1 +1,11 @@
-<p>{{jellyBean.name}}</p>
+<div class="column wrapper full-center">
+    <img [src]="jellyBean.image ? jellyBean.image : '../../../assets/images/jbIcon.jpg'" alt="Jelly Bean Thumnail">
+    <h2 class="title">{{ jellyBean.name }}</h2>
+    <div class="row gap-05">
+        <span class="quantity-label">Quantity:</span>
+        <span class="quantity">{{ jellyBean.quantity }}</span>
+    </div>
+    <p-rating [(ngModel)]="jellyBean.rating" 
+    [readonly]="true"
+    iconCancelClass="hidden" />
+</div>

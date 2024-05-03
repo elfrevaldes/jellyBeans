@@ -1,5 +1,5 @@
 export interface IListRequest {
-    sortBy?: string; 
+    sortBy: string; 
     filterByCategory?: string; 
     limit?: number; 
     page?: number;
@@ -12,6 +12,7 @@ export interface IJellyBeansList extends IListRequest {
 export interface IJellyBean {
     id: number;
     name: string;
+    image?: string;
     description: string;
     quantity: number;
     rating: number;
