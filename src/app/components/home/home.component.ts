@@ -1,66 +1,187 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ShowcaseComponent } from "../showcase/showcase.component";
-//import { SweetsService } from '../../services/sweets.service';
-//import { IJellyBeansList } from '../../../interfaces/sweets';
+import { Table, TableModule } from 'primeng/table';
+import { IJellyBean } from '../../../interfaces/sweets';
+import { SweetsService } from '../../services/sweets.service';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { RatingModule } from 'primeng/rating';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { CommonModule } from '@angular/common';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
     selector: 'app-home',
     standalone: true,
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss',
-    imports: [ShowcaseComponent]
+    imports: [
+      ShowcaseComponent, 
+      TableModule, 
+      DialogModule,
+      InputTextModule,
+      IconFieldModule, 
+      InputIconModule,
+      FormsModule,
+      RatingModule,
+      ButtonModule,
+      ToastModule,
+      ToolbarModule,
+      CommonModule,
+      ConfirmDialogModule,
+      RadioButtonModule,
+      InputNumberModule, 
+    ],
+    providers: [MessageService, ConfirmationService, SweetsService],
+    styles: [
+        `:host ::ng-deep .p-dialog .product-image {
+            width: 150px;
+            margin: 0 auto 2rem auto;
+            display: block;
+        }`
+    ],
 })
 export class HomeComponent {
-  // readonly ulrPath: string = "http://www.amazon.com";
-  // jellyBeansList!: IJellyBeansList;
-
-  //constructor(/*private sweetsService: SweetsService*/){}
-
-  // ngOnInit() {
-  //   // Mocking the data for now until I connect with AWS S3
-  //   this.jellyBeansList = {
-  //     sortBy: 'name',
-  //     filterByCategory: 'Jelly Beans',
-  //     limit: 10,
-  //     page: 0,
-  //     sweetsList: [
-  //       { id: 1,  name: 'Blueberry Blast', description: 'Delicious blueberry flavor', quantity: 100, rating: 4.5, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 2,  name: 'Strawberry Splash', description: 'Refreshing strawberry taste', quantity: 80, rating: 4.2, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 3,  name: 'Cherry Charm', description: 'Tangy cherry sensation', quantity: 90, rating: 4.0, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 4,  name: 'Lemon Lime Twist', description: 'Zesty lemon-lime fusion', quantity: 85, rating: 4.3, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 5,  name: 'Orange Burst', description: 'Vibrant orange burst of flavor', quantity: 95, rating: 4.1, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 6,  name: 'Grape Delight', description: 'Rich grape flavor', quantity: 75, rating: 4.4, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 7,  name: 'Watermelon Wave', description: 'Juicy watermelon sensation', quantity: 85, rating: 4.2, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 8,  name: 'Peach Paradise', description: 'Sweet peach indulgence', quantity: 80, rating: 4.3, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 9,  name: 'Apple Avalanche', description: 'Crisp apple delight', quantity: 88, rating: 4.0, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 10, name: 'Banana Blast', description: 'Creamy banana goodness', quantity: 92, rating: 4.2, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 11, name: 'Raspberry Rave', description: 'Tart raspberry explosion', quantity: 78, rating: 4.1, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 12, name: 'Mango Madness', description: 'Exotic mango sensation', quantity: 82, rating: 4.4, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 13, name: 'Coconut Craze', description: 'Tropical coconut delight', quantity: 86, rating: 4.3, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 14, name: 'Pineapple Punch', description: 'Tangy pineapple burst', quantity: 79, rating: 4.2, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 15, name: 'Cranberry Crush', description: 'Tart cranberry sensation', quantity: 83, rating: 4.1, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 16, name: 'Blackberry Bliss', description: 'Bold blackberry flavor', quantity: 76, rating: 4.5, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 17, name: 'Kiwi Kick', description: 'Zesty kiwi burst', quantity: 87, rating: 4.3, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 18, name: 'Mint Marvel', description: 'Cool mint sensation', quantity: 81, rating: 4.2, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 19, name: 'Grapefruit Glee', description: 'Citrusy grapefruit delight', quantity: 84, rating: 4.0, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 20, name: 'Passionfruit Paradise', description: 'Exotic passionfruit sensation', quantity: 88, rating: 4.4, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 21, name: 'Cotton Candy Bliss', description: 'Sweet and fluffy cotton candy flavor', quantity: 110, rating: 4.6, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 22, name: 'Lemon Zest', description: 'Tangy lemon burst', quantity: 95, rating: 4.3, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 23, name: 'Watermelon Splash', description: 'Juicy watermelon goodness', quantity: 120, rating: 4.8, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 24, name: 'Peachy Keen', description: 'Ripe peach flavor', quantity: 85, rating: 4.1, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 25, name: 'Grape Delight', description: 'Intensely grape-flavored', quantity: 100, rating: 4.4, category: 'Jelly Beans', isFeatured: true },
-  //       { id: 26, name: 'Mango Tango', description: 'Exotic mango twist', quantity: 75, rating: 4.0, category: 'Jelly Beans', isFeatured: false },
-  //       { id: 27, name: 'Raspberry Fizz', description: 'Bubbly raspberry sensation', quantity: 105, rating: 4.5, category: 'Jelly Beans', isFeatured: true },
-  //     ]
-  //   } as IJellyBeansList;
+  @ViewChild('dt') dataTable!: Table; // Reference to the PrimeNG table
+  jellyBeanDialog: boolean = false;
+  submitted: boolean = false;
 
 
-  //   console.log(`service was called and response was: ${JSON.stringify(this.jellyBeansList.sweetsList)}`);
+  jellyBeansList: IJellyBean[] = []; // Filtered data
+  selectedJellyBeans!: IJellyBean[] | null;
 
-  //   // I need to connect with Amazon S3 with an Http Get
-  //   // this.sweetsService.getJellyBeans(this.ulrPath, {page: 0, itemsPerPage: 10})
-  //   // .subscribe((jellyBeans: IJellyBeansList) => {
-  //   //   console.log(`service was called and response was: ${jellyBeans.sweetsList}`);
-  //   // });
-  // }
+  jellyBean!: IJellyBean;
+
+  statuses!: any[];
+
+  loading: boolean = false;
+  searchValue: string | undefined;
+
+  constructor(private sweetService: SweetsService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
+  
+  ngOnInit() {  
+    // Mocking the data for now until I connect with AWS S3
+    this.jellyBeansList = this.sweetService.getFakeJellyBeans();
+    this.loading = false;
+  }
+
+  clear(table: Table) {
+        table.clear();
+        this.searchValue = '';
+  }
+
+  openNew() {
+        this.jellyBean = this.jellyBean = {
+          id: '',
+          name: '',
+          description: '',
+          quantity: 0,
+          rating: 3,
+          category: 'Sweet',
+          isFeatured: false
+        };
+        this.submitted = false;
+        this.jellyBeanDialog = true;
+  }
+
+  deleteselectedJellyBeans() {
+    this.confirmationService.confirm({
+        message: 'Are you sure you want to delete the selected Jelly Beans?',
+        header: 'Confirm',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+            this.jellyBeansList = this.jellyBeansList.filter((val) => !this.selectedJellyBeans?.includes(val));
+            this.selectedJellyBeans = null;
+            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Beans Deleted', life: 3000 });
+        }
+    });
+  }
+
+  edit(jellyBean: IJellyBean) {
+      this.jellyBean = { ...jellyBean };
+      this.jellyBeanDialog = true;
+  }
+
+  delete(jellyBean: IJellyBean) {
+      this.confirmationService.confirm({
+          message: 'Are you sure you want to delete ' + jellyBean.name + '?',
+          header: 'Confirm',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+              this.jellyBeansList = this.jellyBeansList.filter((val) => val.id !== jellyBean.id);
+              this.jellyBean = {
+                id: '',
+                name: '',
+                description: '',
+                quantity: 0,
+                rating: 0,
+                category: '',
+                isFeatured: false
+              };
+              this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Deleted', life: 3000 });
+          }
+      });
+  }
+
+  save() {
+      this.submitted = true;
+      console.log(JSON.stringify(this.jellyBean), "calling");
+      if (this.jellyBean.name?.trim()) {
+          if (this.jellyBean.id && this.jellyBean.id != '') {
+              this.jellyBeansList[this.findIndexById(this.jellyBean.id)] = this.jellyBean;
+              this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Updated', life: 3000 });
+          } else {
+              this.jellyBean.id = this.createId();
+              this.jellyBean.image = '../../../assets/images/jbIcon.jpg';
+              this.jellyBeansList.push(this.jellyBean);
+              this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Created', life: 3000 });
+          }
+
+          this.jellyBeansList = [...this.jellyBeansList];
+          this.jellyBeanDialog = false;
+          this.jellyBean = {
+            id: this.createId(),
+            name: '',
+            description: '',
+            quantity: 0,
+            rating: 0,
+            category: '',
+            isFeatured: false
+          };
+      }
+  }
+
+  findIndexById(id: string): number {
+      let index = -1;
+      for (let i = 0; i < this.jellyBeansList.length; i++) {
+          if (this.jellyBeansList[i].id === id) {
+              index = i;
+              break;
+          }
+      }
+
+      return index;
+  }
+
+  createId(): string {
+      let id = '';
+      var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      for (var i = 0; i < 5; i++) {
+          id += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return id;
+  }
+
+  hideDialog() {
+      this.jellyBeanDialog = false;
+      this.submitted = false;
+  }
 }

@@ -1,0 +1,58 @@
+.table {
+    min-width: 90%;
+}
+.searchRow {
+    display: flex;
+    align-items: center;
+}
+
+.p-button {
+    align-self: flex-start;
+    /* Align button to the left */
+}
+
+.p-input-icon-left {
+    margin-left: auto;
+    /* Align input to the right */
+}
+
+.modifier {
+    display: flex;
+    align-items: baseline;
+}
+
+.descLabel {
+    display: inline-block;
+    margin-bottom: .5rem;
+}
+
+.formGroupField {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+}
+.columnsFields {
+    display: flex;
+    flex-direction: row;
+}
+
+.fieldBorder {
+}
+
+.paired {
+    width: 50%;
+}
+
+.fieldBorder:focus {
+    border-radius: 4px;
+    outline: 0 none;
+    outline-color: initial;
+    outline-style: none;
+    outline-width: 0px;
+    outline-offset: 0;
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    border-color: #007bff;
+    border-top-color: rgb(0, 123, 255);
+    border-right-color: rgb(0, 123, 255);
+    border-bottom-color: rgb(0, 123, 255);
+}

@@ -1,10 +1,25 @@
 @import './app/styles/veriables.scss';
 @import "primeng/resources/themes/bootstrap4-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
+@import 'primeicons/primeicons.css';
 
 /* global styles */
 .p-rating-cancel-item {
     display: none !important;
+}
+
+.p-button .p-button-icon-left {
+    margin-right: 0;
+}
+
+.pi-search:before {
+    content: "\e908";
+}
+
+:host ::ng-deep .p-dialog .product-image {
+    width: 150px;
+    margin: 0 auto 2rem auto;
+    display: block;
 }
 
 // A
@@ -22,6 +37,10 @@
 .full-center {
     align-items: center;
     justify-content: center;
+}
+
+.flexContainer {
+    display: flex;
 }
 
 // G

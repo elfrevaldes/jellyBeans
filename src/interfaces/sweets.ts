@@ -6,11 +6,12 @@ export interface IListRequest {
 }
 
 export interface IJellyBeansList extends IListRequest {
+    filter(predicate: (val: IJellyBean) => boolean): IJellyBean[];
     sweetsList: IJellyBean[];
 }
 
 export interface IJellyBean {
-    id: number;
+    id: string;
     name: string;
     image?: string;
     description: string;

@@ -1,5 +1,184 @@
-<!-- <app-showcase [jellyBeansList]="jellyBeansList"></app-showcase> -->
 <app-showcase></app-showcase>
-<div>
-  <h1>This is where the table will go</h1>
+<div class="card">
+  <p-toast />
+  <p-toolbar styleClass="mb-4" > 
+    <ng-template pTemplate="left" >
+      <h1 class="m-0">Jelly Beans Inventory</h1>
+    </ng-template>
+    <ng-template pTemplate="right">
+      <div class="flexContainer gap-05">
+        <p-button label="Clear Filters" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt)" class='mr-2' />
+        <p-button pRipple severity="success" label="New" icon="pi pi-plus" class="mr-2" (click)="openNew()" />
+        <p-button pRipple severity="danger" label="Delete" icon="pi pi-trash" (click)="deleteselectedJellyBeans()"
+          [disabled]="!selectedJellyBeans || !selectedJellyBeans.length" />
+      </div>
+      <!-- <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import"
+        class="mr-2 inline-block" />
+      <p-button pRipple severity="help" label="Export" icon="pi pi-upload" /> -->
+    </ng-template>
+  </p-toolbar>
+
+  <p-table #dt [value]="jellyBeansList" [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 20]" [paginator]="true"
+    [globalFilterFields]="['name', 'description', 'quantity', 'rating', 'isFeatured']"
+    [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedJellyBeans" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+    <ng-template pTemplate="caption">
+      <div class="flex align-items-center justify-content-between">
+        <span class="p-input-icon-left">
+          <i class="fas fa-search"></i>
+          <input pInputText type="text" [(ngModel)]="searchValue" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+            placeholder="Search..." />
+        </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 4rem">
+          <p-tableHeaderCheckbox />
+        </th>
+        <th pSortableColumn="name" style="min-width:15rem">
+          Name <p-sortIcon field="name" />
+        </th>
+        <th>
+          Image
+        </th>
+        <th>
+          Description
+        </th>
+        <th>
+          Quantity
+        </th>
+        <th pSortableColumn="rating">
+          Reviews <p-sortIcon field="rating" />
+        </th>
+        <th pSortableColumn="category" style="min-width:10rem">
+          Category <p-sortIcon field="category" />
+        </th>
+        <th pSortableColumn="isFeatured" style="min-width:10rem">
+          Featured <p-sortIcon field="Featured" />
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-jellyBean>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="jellyBean" />
+        </td>
+        <td>
+          {{ jellyBean.name }}
+        </td>
+        <td>
+          <img src="../../../assets/images/jbIcon.jpg" [alt]="jellyBean.name"
+            width="50" class="shadow-4" />
+        </td>
+        <td>
+          {{ jellyBean.description }}
+        </td>
+        <td class="gap-05">
+          <span class="p-column-title">Quantity</span>
+          <span class="quantity-label">Quantity:</span>
+          <span class="quantity"> {{ jellyBean.quantity }}</span>
+        </td>
+        <td>
+          <p-rating [(ngModel)]="jellyBean.rating" [readonly]="true" [cancel]="false" />
+        </td>
+        <td>
+          {{ jellyBean.category }}
+        </td>
+        <td>
+          {{ jellyBean.isFeatured ? 'Yes' : 'No' }}
+        </td>
+        <td class="flexContainer gap-05">
+          <p-button pRipple icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" severity="success" (click)="edit(jellyBean)" />
+          <p-button pRipple icon="pi pi-trash"  [rounded]="true" [outlined]="true" severity="danger" (click)="delete(jellyBean)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        In total there are {{ jellyBeansList ? jellyBeansList.length : 0 }} Jelly Beans.
+      </div>
+    </ng-template>
+  </p-table>
+
+  <p-dialog [(visible)]="jellyBeanDialog" [style]="{ width: '450px' }" header="Jelly Beans Details" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+      <img src="../../../assets/images/jbIcon.jpg" [alt]="jellyBean.image"
+        class="block m-auto pb-3" *ngIf="jellyBean.image" />
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" pInputText id="name" [(ngModel)]="jellyBean.name" required autofocus />
+        <small class="p-error" *ngIf="submitted && !jellyBean.name">
+          Name is required.
+        </small>
+      </div>
+      <div class="field formGroupField">
+        <label class="descLabel" for="description">Description</label>
+        <textarea class="fieldBorder" id="description" pInputTextarea [(ngModel)]="jellyBean.description" required rows="3" cols="20"></textarea>
+        <small class="p-error" *ngIf="submitted && !jellyBean.description">
+          Description is required.
+        </small>
+      </div>
+
+      <div class="field formGroupField">
+        <div class="columnsFields">
+          <div class="formgrid grid paired">
+            <label class="mb-3">Category</label>
+            <div class="field-radiobutton col-6">
+              <p-radioButton id="category1" name="category" value="Sweet" [(ngModel)]="jellyBean.category" />
+              <label for="category1">Sweet</label>
+            </div>
+            <div class="field-radiobutton col-6">
+              <p-radioButton id="category2" name="category" value="Sour" [(ngModel)]="jellyBean.category" />
+              <label for="category2">Sour</label>
+            </div>
+            <div class="field-radiobutton col-6">
+              <p-radioButton id="category3" name="category" value="boring" [(ngModel)]="jellyBean.category" />
+              <label for="category3">Boring</label>
+            </div>
+            <div class="field-radiobutton col-6">
+              <p-radioButton id="category4" name="category" value="Sugar Free" [(ngModel)]="jellyBean.category" />
+              <label for="category4">Sugar Free</label>
+            </div>
+          </div>
+          <div class="formgrid grid paired">
+            <div class="field formGroupField">
+              <label for="price">Review</label>
+              <p-rating [(ngModel)]="jellyBean.rating" [readonly]="false" [cancel]="true" />
+            </div>
+            <div class="field formGroupField">
+              <label for="quantity">Quantity</label>
+              <p-inputNumber id="quantity" [(ngModel)]="jellyBean.quantity" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field formGroupField">
+        <div class="columnsFields">
+          <div class="formgrid grid">
+            <label class="mb-3">Featured</label>
+            <div class="field-radiobutton col-6">
+              <p-radioButton id="featured1" name="Featured" [value]="true" [(ngModel)]="jellyBean.isFeatured" />
+              <label for="category1">Yes</label>
+            </div>
+            <div class="field-radiobutton col-6">
+              <p-radioButton id="featured2" name="Featured" [value]="false" [(ngModel)]="jellyBean.isFeatured" />
+              <label for="category2">No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <p-button pRipple label="Cancel" icon="pi pi-times" [text]="true" (click)="hideDialog()" />
+      <p-button pRipple label="Save" icon="pi pi-check" [text]="true" (click)="save()" />
+    </ng-template>
+  </p-dialog>
+
+  <p-confirmDialog [style]="{ width: '450px' }" />
 </div>

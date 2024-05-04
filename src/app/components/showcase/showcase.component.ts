@@ -13,7 +13,7 @@ import { CarouselModule } from 'primeng/carousel';
   styleUrl: './showcase.component.scss'
 })
 export class ShowcaseComponent implements OnInit {
-  @Input() jellyBeansList!: IJellyBeansList;
+  @Input() jellyBeansList!: IJellyBean[];
   responsiveOptions: any[] | undefined;
   
   constructor(private sweetService: SweetsService){
@@ -26,7 +26,7 @@ export class ShowcaseComponent implements OnInit {
   ngOnInit() {  
     // Mocking the data for now until I connect with AWS S3
     this.jellyBeansList = this.sweetService.getFakeJellyBeans();
-    this.jellyBeansList.sweetsList = this.jellyBeansList.sweetsList.filter(jellyBean => jellyBean.isFeatured);
+    this.jellyBeansList = this.jellyBeansList.filter(jellyBean => jellyBean.isFeatured);
     this.responsiveOptions = [
             {
                 breakpoint: '1199px',

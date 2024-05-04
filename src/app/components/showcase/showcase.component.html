@@ -1,10 +1,9 @@
 <div class="column full-center">
-    <p-carousel [value]="jellyBeansList.sweetsList" [numVisible]="3" [numScroll]="3" [circular]="true"
+    <p-carousel [value]="jellyBeansList" [numVisible]="3" [numScroll]="3" [circular]="true"
         [responsiveOptions]="responsiveOptions" autoplayInterval="5000" class="centerCarrusel">
         <ng-template let-item pTemplate="item">
             <div class="row wrap gap-1 space-between">
-                <!-- Use item to access the current jelly bean -->
-                <jelly-bean *ngIf="item.isFeatured" [jellyBean]="item"
+                <jelly-bean [jellyBean]="item"
                     (someOutput)="onJellyBeanOutput($event)"></jelly-bean>
             </div>
         </ng-template>
