@@ -6,8 +6,6 @@ import { IJellyBean, IJellyBeansList } from '../../interfaces/sweets';
   providedIn: 'root'
 })
 export class SweetsService {
-
-
   constructor() {  }
 
   getFakeJellyBeans = (): IJellyBean[] => (
