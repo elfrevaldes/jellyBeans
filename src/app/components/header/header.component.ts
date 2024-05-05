@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common'
 
 @Component({
   selector: 'app-header',
@@ -9,5 +8,4 @@ import { NgOptimizedImage } from '@angular/common'
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-
 }

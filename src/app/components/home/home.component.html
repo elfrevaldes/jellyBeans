@@ -8,13 +8,11 @@
     <ng-template pTemplate="right">
       <div class="flexContainer gap-05">
         <p-button label="Clear Filters" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt)" class='mr-2' />
+        <p-button pRipple severity="success" label="Populated" icon="pi pi-plus" class="mr-2" (click)="populated()" />
         <p-button pRipple severity="success" label="New" icon="pi pi-plus" class="mr-2" (click)="openNew()" />
         <p-button pRipple severity="danger" label="Delete" icon="pi pi-trash" (click)="deleteselectedJellyBeans()"
           [disabled]="!selectedJellyBeans || !selectedJellyBeans.length" />
       </div>
-      <!-- <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import"
-        class="mr-2 inline-block" />
-      <p-button pRipple severity="help" label="Export" icon="pi pi-upload" /> -->
     </ng-template>
   </p-toolbar>
 

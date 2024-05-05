@@ -17,6 +17,10 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CommonModule } from '@angular/common';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { ApiService } from '../../services/api.service';
+import { ChangeDetectorRef } from '@angular/core';
+import { catchError, of, tap } from 'rxjs';
+import { JellyBeanService } from '../../services/jellybean.service';
 
 @Component({
     selector: 'app-home',
@@ -40,7 +44,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
       RadioButtonModule,
       InputNumberModule, 
     ],
-    providers: [MessageService, ConfirmationService, SweetsService],
+    providers: [MessageService, ConfirmationService, ApiService],
     styles: [
         `:host ::ng-deep .p-dialog .product-image {
             width: 150px;
@@ -54,31 +58,55 @@ export class HomeComponent {
   jellyBeanDialog: boolean = false;
   submitted: boolean = false;
 
+  prefabJellies: IJellyBean[] = [];
 
-  jellyBeansList: IJellyBean[] = []; // Filtered data
-  selectedJellyBeans!: IJellyBean[] | null;
-
+  jellyBeansList: IJellyBean[] = [];
   jellyBean!: IJellyBean;
-
-  statuses!: any[];
+  selectedJellyBeans!: IJellyBean[] | null;
 
   loading: boolean = false;
   searchValue: string | undefined;
 
-  constructor(private sweetService: SweetsService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
+  constructor(
+    private apiService: ApiService, 
+    private fakeData: SweetsService,
+    private jellyBeanService: JellyBeanService,
+    private messageService: MessageService, 
+    private confirmationService: ConfirmationService,
+    private cdr: ChangeDetectorRef) { }
   
   ngOnInit() {  
-    // Mocking the data for now until I connect with AWS S3
-    this.jellyBeansList = this.sweetService.getFakeJellyBeans();
-    this.loading = false;
+    // Fetch jelly beans from the service
+    this.loadJellyBeans();
+    // so we not have to write them 
+    this.prefabJellies = this.fakeData.getFakeJellyBeans();
   }
 
-  clear(table: Table) {
+  loadJellyBeans(): void {
+    this.loading = true;
+    this.apiService.getAllJellyBeans().pipe(
+        tap((jellyBeans: IJellyBean[]) => {
+            this.jellyBeansList = jellyBeans;
+            this.loading = false;
+        }),
+        catchError((error) => {
+            console.error('Error fetching jelly beans:', error);
+            this.loading = false;
+            return of([]); // in case of error
+        })
+    ).subscribe();
+    
+    if(this.searchValue != undefined){
+        this.dataTable.filterGlobal(this.searchValue, 'contains');
+    }
+}
+
+  clear(table: Table): void {
         table.clear();
         this.searchValue = '';
   }
 
-  openNew() {
+  openNew(): void {
         this.jellyBean = this.jellyBean = {
           id: '',
           name: '',
@@ -86,90 +114,109 @@ export class HomeComponent {
           quantity: 0,
           rating: 3,
           category: 'Sweet',
-          isFeatured: false
+          isFeatured: false,
+          image: '../../../assets/images/jbIcon.jpg',
         };
         this.submitted = false;
         this.jellyBeanDialog = true;
   }
 
-  deleteselectedJellyBeans() {
-    this.confirmationService.confirm({
-        message: 'Are you sure you want to delete the selected Jelly Beans?',
-        header: 'Confirm',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-            this.jellyBeansList = this.jellyBeansList.filter((val) => !this.selectedJellyBeans?.includes(val));
-            this.selectedJellyBeans = null;
-            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Beans Deleted', life: 3000 });
-        }
-    });
-  }
+  populated(): void {    
+    // Check if we have beans to use
+    if (this.prefabJellies.length > 0) {
+        // Generate a random index within the range of the array length
+        const randomIndex = Math.floor(Math.random() * length);
 
-  edit(jellyBean: IJellyBean) {
+        // Set this.jellyBean to the jelly at the random index
+        this.jellyBean = this.prefabJellies[randomIndex];
+        this.jellyBean.id = ''; // so we can create a real id
+        this.submitted = false;
+        this.jellyBeanDialog = true;
+    } else {
+        // If the array was empty
+        this.openNew();
+    }
+}
+
+  deleteselectedJellyBeans(): void {
+        this.confirmationService.confirm({
+            message: 'Are you sure you want to delete the selected Jelly Beans?',
+            header: 'Confirm',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                if (this.selectedJellyBeans) {
+                    this.selectedJellyBeans.forEach(jellyBean => {
+                        this.apiService.deleteJellyBeanById(jellyBean.id).pipe(
+                            tap(() => {
+                                this.jellyBeansList = this.jellyBeansList.filter(val => val.id !== jellyBean.id);
+                                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Beans Deleted', life: 3000 });
+                            }),
+                            catchError((error) => {
+                                console.error('Error deleting jelly bean:', error);
+                                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete jelly beans', life: 3000 });
+                                return of(null);
+                            })
+                        ).subscribe();
+                    });
+                    this.selectedJellyBeans = null;
+                }
+            }
+        });
+    }
+
+  edit(jellyBean: IJellyBean): void {
       this.jellyBean = { ...jellyBean };
       this.jellyBeanDialog = true;
   }
 
-  delete(jellyBean: IJellyBean) {
-      this.confirmationService.confirm({
-          message: 'Are you sure you want to delete ' + jellyBean.name + '?',
-          header: 'Confirm',
-          icon: 'pi pi-exclamation-triangle',
-          accept: () => {
-              this.jellyBeansList = this.jellyBeansList.filter((val) => val.id !== jellyBean.id);
-              this.jellyBean = {
-                id: '',
-                name: '',
-                description: '',
-                quantity: 0,
-                rating: 0,
-                category: '',
-                isFeatured: false
-              };
-              this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Deleted', life: 3000 });
-          }
-      });
-  }
+  delete(jellyBean: IJellyBean): void {
+        this.confirmationService.confirm({
+            message: 'Are you sure you want to delete ' + jellyBean.name + '?',
+            header: 'Confirm',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.apiService.deleteJellyBeanById(jellyBean.id).pipe(
+                    tap(() => {
+                        this.jellyBeansList = this.jellyBeansList.filter(val => val.id !== jellyBean.id);
+                        this.jellyBeanService.triggerJellyBeanUpdate();
+                        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Deleted', life: 3000 });
+                    }),
+                    catchError((error) => {
+                        console.error('Error deleting jelly bean:', error);
+                        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete jelly bean', life: 3000 });
+                        return of(null);
+                    })
+                ).subscribe();
+            }
+        });
+    }
 
-  save() {
-      this.submitted = true;
-      console.log(JSON.stringify(this.jellyBean), "calling");
-      if (this.jellyBean.name?.trim()) {
-          if (this.jellyBean.id && this.jellyBean.id != '') {
-              this.jellyBeansList[this.findIndexById(this.jellyBean.id)] = this.jellyBean;
-              this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Updated', life: 3000 });
-          } else {
-              this.jellyBean.id = this.createId();
-              this.jellyBean.image = '../../../assets/images/jbIcon.jpg';
-              this.jellyBeansList.push(this.jellyBean);
-              this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Created', life: 3000 });
-          }
-
-          this.jellyBeansList = [...this.jellyBeansList];
-          this.jellyBeanDialog = false;
-          this.jellyBean = {
-            id: this.createId(),
-            name: '',
-            description: '',
-            quantity: 0,
-            rating: 0,
-            category: '',
-            isFeatured: false
-          };
-      }
-  }
-
-  findIndexById(id: string): number {
-      let index = -1;
-      for (let i = 0; i < this.jellyBeansList.length; i++) {
-          if (this.jellyBeansList[i].id === id) {
-              index = i;
-              break;
-          }
-      }
-
-      return index;
-  }
+    save(): void {
+        this.submitted = true;
+        // We do not have an image uploader
+        this.jellyBean.image = '../../../assets/images/jbIcon.jpg';
+        
+        if(this.jellyBean.id == ''){
+            this.jellyBean.id = this.createId();
+        }
+        this.searchValue = this.jellyBean.name;
+        if (this.jellyBean.name?.trim() && this.jellyBean.id != '') {
+                this.apiService.saveJellyBean(this.jellyBean).pipe(
+                    tap(() => {
+                        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Updated', life: 3000 });
+                        this.loadJellyBeans(); // Reload jelly beans after update
+                        this.jellyBeanService.triggerJellyBeanUpdate();
+                    }),
+                    catchError((error) => {
+                        console.error('Error updating jelly bean:', error);
+                        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update jelly bean', life: 3000 });
+                        return of(null);
+                    })
+                ).subscribe();
+            }
+            this.jellyBeanDialog = false;
+            this.jellyBean = {} as IJellyBean;
+    }
 
   createId(): string {
       let id = '';
@@ -180,7 +227,7 @@ export class HomeComponent {
       return id;
   }
 
-  hideDialog() {
+  hideDialog(): void {
       this.jellyBeanDialog = false;
       this.submitted = false;
   }

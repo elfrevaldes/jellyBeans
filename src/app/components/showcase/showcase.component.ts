@@ -2,8 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { JellyBeanComponent } from '../jelly-bean/jelly-bean.component';
 import { CommonModule } from '@angular/common';
 import { IJellyBean, IJellyBeansList } from '../../../interfaces/sweets';
-import { SweetsService } from '../../services/sweets.service';
 import { CarouselModule } from 'primeng/carousel';
+import { ApiService } from '../../services/api.service';
+import { Subscription, catchError, of, tap } from 'rxjs';
+import { JellyBeanService } from '../../services/jellybean.service';
 
 @Component({
   selector: 'app-showcase',
@@ -13,56 +15,54 @@ import { CarouselModule } from 'primeng/carousel';
   styleUrl: './showcase.component.scss'
 })
 export class ShowcaseComponent implements OnInit {
-  @Input() jellyBeansList!: IJellyBean[];
-  responsiveOptions: any[] | undefined;
+  @Input() jellyBeansList: IJellyBean[] = [];
+  responsiveOptions: any[] = [];
+  private jellyBeanUpdateSubscription: Subscription | undefined;
   
-  constructor(private sweetService: SweetsService){
+  constructor(private jellyBeansApi: ApiService, private jellyBeanService: JellyBeanService){
   }
 
-  onJellyBeanOutput(jellyBean: IJellyBean){
-    // I want to do something with jb
-  }
-
-  ngOnInit() {  
-    // Mocking the data for now until I connect with AWS S3
-    this.jellyBeansList = this.sweetService.getFakeJellyBeans();
-    this.jellyBeansList = this.jellyBeansList.filter(jellyBean => jellyBean.isFeatured);
+  ngOnInit(): void {
+    this.loadJellyBeans();
+    this.jellyBeanUpdateSubscription = this.jellyBeanService.jellyBeanUpdated$.subscribe(() => {
+      this.loadJellyBeans();
+    });
     this.responsiveOptions = [
-            {
-                breakpoint: '1199px',
-                numVisible: 1,
-                numScroll: 1
-            },
-            {
-                breakpoint: '991px',
-                numVisible: 2,
-                numScroll: 1
-            },
-            {
-                breakpoint: '767px',
-                numVisible: 1,
-                numScroll: 1
-            }
-        ];
+      {
+        breakpoint: '1199px',
+        numVisible: 1,
+        numScroll: 1
+      },
+      {
+        breakpoint: '991px',
+        numVisible: 2,
+        numScroll: 1
+      },
+      {
+        breakpoint: '767px',
+        numVisible: 1,
+        numScroll: 1
+      }
+    ];
   }
 
-  getSeverity(status: string) {
-        switch (status) {
-            case 'INSTOCK':
-                return 'success';
-            case 'LOWSTOCK':
-                return 'warning';
-            case 'OUTOFSTOCK':
-                return 'danger';
-            default:
-                return 'danger';
-        }
-    }
-  //console.log(`service was called and response was: ${JSON.stringify(this.jellyBeansList.sweetsList)}`);
+  loadJellyBeans(): void {
+    this.jellyBeansApi.getFeaturedJellyBeans().pipe(
+      tap((jellyBeans: IJellyBean[]) => this.jellyBeansList = jellyBeans),
+      catchError((error) => {
+        console.error('Error fetching jelly beans:', error);
+        return of([]); // Return an empty array in case of error
+      })
+    ).subscribe();
+  }
 
-  // I need to connect with Amazon S3 with an Http Get
-  // this.sweetsService.getJellyBeans(this.ulrPath, {page: 0, itemsPerPage: 10})
-  // .subscribe((jellyBeans: IJellyBeansList) => {
-  //   console.log(`service was called and response was: ${jellyBeans.sweetsList}`);
-  // });
+  ngOnDestroy(): void {
+    if (this.jellyBeanUpdateSubscription) {
+      this.jellyBeanUpdateSubscription.unsubscribe();
+    }
+  }
+  
+  onJellyBeanOutput(jellyBean: IJellyBean): void {
+    // Handle jelly bean output here
+  }
 }
