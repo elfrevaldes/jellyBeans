@@ -21,6 +21,7 @@ import { ApiService } from '../../services/api.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { catchError, of, tap } from 'rxjs';
 import { JellyBeanService } from '../../services/jellybean.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
     selector: 'app-home',
@@ -125,7 +126,7 @@ export class HomeComponent {
     // Check if we have beans to use
     if (this.prefabJellies.length > 0) {
         // Generate a random index within the range of the array length
-        const randomIndex = Math.floor(Math.random() * length);
+        const randomIndex = Math.floor(Math.random() * this.prefabJellies.length);
 
         // Set this.jellyBean to the jelly at the random index
         this.jellyBean = this.prefabJellies[randomIndex];
@@ -198,7 +199,7 @@ export class HomeComponent {
         this.jellyBean.image = '../../../assets/images/jbIcon.jpg';
         
         if(this.jellyBean.id == ''){
-            this.jellyBean.id = this.createId();
+            this.jellyBean.id = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
         }
         this.searchValue = this.jellyBean.name;
         if (this.jellyBean.name?.trim() && this.jellyBean.id != '') {
@@ -218,15 +219,6 @@ export class HomeComponent {
             this.jellyBeanDialog = false;
             this.jellyBean = {} as IJellyBean;
     }
-
-  createId(): string {
-      let id = '';
-      var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      for (var i = 0; i < 5; i++) {
-          id += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return id;
-  }
 
   hideDialog(): void {
       this.jellyBeanDialog = false;
