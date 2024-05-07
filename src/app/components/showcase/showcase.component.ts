@@ -27,6 +27,7 @@ export class ShowcaseComponent implements OnInit {
     this.jellyBeanUpdateSubscription = this.jellyBeanService.jellyBeanUpdated$.subscribe(() => {
       this.loadJellyBeans();
     });
+    
     this.responsiveOptions = [
       {
         breakpoint: '1199px',

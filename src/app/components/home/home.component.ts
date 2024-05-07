@@ -149,6 +149,7 @@ export class HomeComponent {
                         this.apiService.deleteJellyBeanById(jellyBean.id).pipe(
                             tap(() => {
                                 this.jellyBeansList = this.jellyBeansList.filter(val => val.id !== jellyBean.id);
+                                this.jellyBeanService.triggerJellyBeanUpdate(); // Observer subscription
                                 this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Beans Deleted', life: 3000 });
                             }),
                             catchError((error) => {
@@ -178,7 +179,7 @@ export class HomeComponent {
                 this.apiService.deleteJellyBeanById(jellyBean.id).pipe(
                     tap(() => {
                         this.jellyBeansList = this.jellyBeansList.filter(val => val.id !== jellyBean.id);
-                        this.jellyBeanService.triggerJellyBeanUpdate();
+                        this.jellyBeanService.triggerJellyBeanUpdate(); // Observer subscription
                         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Deleted', life: 3000 });
                     }),
                     catchError((error) => {
