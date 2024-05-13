@@ -6,6 +6,7 @@ import { CarouselModule } from 'primeng/carousel';
 import { ApiService } from '../../services/api.service';
 import { Subscription, catchError, of, tap } from 'rxjs';
 import { JellyBeanService } from '../../services/jellybean.service';
+import { SweetsService } from '../../services/sweets.service';
 
 @Component({
   selector: 'app-showcase',
@@ -19,7 +20,7 @@ export class ShowcaseComponent implements OnInit {
   responsiveOptions: any[] = [];
   private jellyBeanUpdateSubscription: Subscription | undefined;
   
-  constructor(private jellyBeansApi: ApiService, private jellyBeanService: JellyBeanService){
+  constructor(private jellyBeansApi: ApiService, private jellyBeanService: JellyBeanService, private fakeData: SweetsService){
   }
 
   ngOnInit(): void {
@@ -48,6 +49,7 @@ export class ShowcaseComponent implements OnInit {
   }
 
   loadJellyBeans(): void {
+    // this.jellyBeansList =  this.fakeData.getFakeJellyBeans();
     this.jellyBeansApi.getFeaturedJellyBeans().pipe(
       tap((jellyBeans: IJellyBean[]) => this.jellyBeansList = jellyBeans),
       catchError((error) => {

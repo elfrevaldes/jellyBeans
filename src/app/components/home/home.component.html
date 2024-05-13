@@ -102,74 +102,73 @@
   </p-table>
 
   <p-dialog [(visible)]="jellyBeanDialog" [style]="{ width: '450px' }" header="Jelly Beans Details" [modal]="true"
-    styleClass="p-fluid">
+    styleClass="p-fluid" #jellyBeanForm>
     <ng-template pTemplate="content">
       <img src="../../../assets/images/jbIcon.jpg" [alt]="jellyBean.image"
         class="block m-auto pb-3" *ngIf="jellyBean.image" />
-      <div class="field">
-        <label for="name">Name</label>
-        <input type="text" pInputText id="name" [(ngModel)]="jellyBean.name" required autofocus />
-        <small class="p-error" *ngIf="submitted && !jellyBean.name">
-          Name is required.
-        </small>
-      </div>
-      <div class="field formGroupField">
-        <label class="descLabel" for="description">Description</label>
-        <textarea class="fieldBorder" id="description" pInputTextarea [(ngModel)]="jellyBean.description" required rows="3" cols="20"></textarea>
-        <small class="p-error" *ngIf="submitted && !jellyBean.description">
-          Description is required.
-        </small>
-      </div>
+        <form #jellyBeanForm="ngForm">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" pInputText id="name" name="name" [(ngModel)]="jellyBean.name" appReqField [errorMessage]="'Name is required.'" autofocus [ngModelOptions]="{ standalone: true }" />
+        </div>
+        <div class="field formGroupField">
+          <label class="descLabel" for="description">Description</label>
+          <textarea class="fieldBorder" id="description" name="description" appReqField [errorMessage]="'Description is required.'" [ngModelOptions]="{ standalone: true }" pInputTextarea [(ngModel)]="jellyBean.description" rows="3" cols="20"></textarea>
+          <!-- <small class="p-error" *ngIf="submitted && !jellyBean.description">
+            Description is required.
+          </small> -->
+        </div>
 
-      <div class="field formGroupField">
-        <div class="columnsFields">
-          <div class="formgrid grid paired">
-            <label class="mb-3">Category</label>
-            <div class="field-radiobutton col-6">
-              <p-radioButton id="category1" name="category" value="Sweet" [(ngModel)]="jellyBean.category" />
-              <label for="category1">Sweet</label>
+        <div class="field formGroupField">
+          <div class="columnsFields">
+            <div class="formgrid grid paired">
+              <label class="mb-3">Category</label>
+              <div class="field-radiobutton col-6">
+                <p-radioButton id="category1" name="category" value="Sweet" [(ngModel)]="jellyBean.category" />
+                <label for="category1">Sweet</label>
+              </div>
+              <div class="field-radiobutton col-6">
+                <p-radioButton id="category2" name="category" value="Sour" [(ngModel)]="jellyBean.category" />
+                <label for="category2">Sour</label>
+              </div>
+              <div class="field-radiobutton col-6">
+                <p-radioButton id="category3" name="category" value="boring" [(ngModel)]="jellyBean.category" />
+                <label for="category3">Boring</label>
+              </div>
+              <div class="field-radiobutton col-6">
+                <p-radioButton id="category4" name="category" value="Sugar Free" [(ngModel)]="jellyBean.category"  />
+                <label for="category4">Sugar Free</label>
+              </div>
             </div>
-            <div class="field-radiobutton col-6">
-              <p-radioButton id="category2" name="category" value="Sour" [(ngModel)]="jellyBean.category" />
-              <label for="category2">Sour</label>
-            </div>
-            <div class="field-radiobutton col-6">
-              <p-radioButton id="category3" name="category" value="boring" [(ngModel)]="jellyBean.category" />
-              <label for="category3">Boring</label>
-            </div>
-            <div class="field-radiobutton col-6">
-              <p-radioButton id="category4" name="category" value="Sugar Free" [(ngModel)]="jellyBean.category" />
-              <label for="category4">Sugar Free</label>
-            </div>
-          </div>
-          <div class="formgrid grid paired">
-            <div class="field formGroupField">
-              <label for="price">Review</label>
-              <p-rating [(ngModel)]="jellyBean.rating" [readonly]="false" [cancel]="true" />
-            </div>
-            <div class="field formGroupField">
-              <label for="quantity">Quantity</label>
-              <p-inputNumber id="quantity" [(ngModel)]="jellyBean.quantity" />
+            <div class="formgrid grid paired">
+              <div class="field formGroupField">
+                <label for="price">Review</label>
+                <p-rating [(ngModel)]="jellyBean.rating" [readonly]="false" [cancel]="true" [ngModelOptions]="{ standalone: true }"/>
+              </div>
+              <div class="field formGroupField">
+                <label for="quantity">Quantity</label>
+                <p-inputNumber id="quantity" [(ngModel)]="jellyBean.quantity" [ngModelOptions]="{ standalone: true }" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="field formGroupField">
-        <div class="columnsFields">
-          <div class="formgrid grid">
-            <label class="mb-3">Featured</label>
-            <div class="field-radiobutton col-6">
-              <p-radioButton id="featured1" name="Featured" [value]="true" [(ngModel)]="jellyBean.isFeatured" />
-              <label for="category1">Yes</label>
-            </div>
-            <div class="field-radiobutton col-6">
-              <p-radioButton id="featured2" name="Featured" [value]="false" [(ngModel)]="jellyBean.isFeatured" />
-              <label for="category2">No</label>
+        <div class="field formGroupField">
+          <div class="columnsFields">
+            <div class="formgrid grid">
+              <label class="mb-3">Featured</label>
+              <div class="field-radiobutton col-6">
+                <p-radioButton id="featured1" name="Featured" [value]="true" [(ngModel)]="jellyBean.isFeatured" />
+                <label for="category1">Yes</label>
+              </div>
+              <div class="field-radiobutton col-6">
+                <p-radioButton id="featured2" name="Featured" [value]="false" [(ngModel)]="jellyBean.isFeatured" />
+                <label for="category2">No</label>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </ng-template>
 
     <ng-template pTemplate="footer">

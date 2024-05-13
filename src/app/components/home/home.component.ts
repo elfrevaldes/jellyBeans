@@ -5,7 +5,7 @@ import { IJellyBean } from '../../../interfaces/sweets';
 import { SweetsService } from '../../services/sweets.service';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
 import { ButtonModule } from 'primeng/button';
@@ -22,6 +22,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { catchError, of, tap } from 'rxjs';
 import { JellyBeanService } from '../../services/jellybean.service';
 import { v4 as uuidv4 } from 'uuid';
+import { DirectivesModule } from '../../directives/directives.module';
 
 @Component({
     selector: 'app-home',
@@ -43,7 +44,8 @@ import { v4 as uuidv4 } from 'uuid';
       CommonModule,
       ConfirmDialogModule,
       RadioButtonModule,
-      InputNumberModule, 
+      InputNumberModule,
+      DirectivesModule,
     ],
     providers: [MessageService, ConfirmationService, ApiService],
     styles: [
@@ -56,6 +58,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class HomeComponent {
   @ViewChild('dt') dataTable!: Table; // Reference to the PrimeNG table
+  @ViewChild('jellyBeanForm') jellyBeanForm!: NgForm;
   jellyBeanDialog: boolean = false;
   submitted: boolean = false;
 
@@ -76,7 +79,7 @@ export class HomeComponent {
     private confirmationService: ConfirmationService,
     private cdr: ChangeDetectorRef) { }
   
-  ngOnInit() {  
+  ngOnInit() {
     // Fetch jelly beans from the service
     this.loadJellyBeans();
     // so we not have to write them 
@@ -85,6 +88,7 @@ export class HomeComponent {
 
   loadJellyBeans(): void {
     this.loading = true;
+    // this.jellyBeansList =  this.fakeData.getFakeJellyBeans();
     this.apiService.getAllJellyBeans().pipe(
         tap((jellyBeans: IJellyBean[]) => {
             this.jellyBeansList = jellyBeans;
@@ -194,30 +198,32 @@ export class HomeComponent {
     }
 
     save(): void {
-        this.submitted = true;
-        // We do not have an image uploader
-        this.jellyBean.image = '../../../assets/images/jbIcon.jpg';
-        
-        if(this.jellyBean.id == ''){
-            this.jellyBean.id = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
-        }
-        this.searchValue = this.jellyBean.name;
-        if (this.jellyBean.name?.trim() && this.jellyBean.id != '') {
-                this.apiService.saveJellyBean(this.jellyBean).pipe(
-                    tap(() => {
-                        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Updated', life: 3000 });
-                        this.loadJellyBeans(); // Reload jelly beans after update
-                        this.jellyBeanService.triggerJellyBeanUpdate();
-                    }),
-                    catchError((error) => {
-                        console.error('Error updating jelly bean:', error);
-                        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update jelly bean', life: 3000 });
-                        return of(null);
-                    })
-                ).subscribe();
+        if (this.jellyBeanForm.valid) {
+            this.submitted = true;
+            // We do not have an image uploader
+            this.jellyBean.image = '../../../assets/images/jbIcon.jpg';
+            
+            if(this.jellyBean.id == ''){
+                this.jellyBean.id = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
             }
-            this.jellyBeanDialog = false;
-            this.jellyBean = {} as IJellyBean;
+            this.searchValue = this.jellyBean.name;
+            if (this.jellyBean.name?.trim() && this.jellyBean.id != '') {
+                    this.apiService.saveJellyBean(this.jellyBean).pipe(
+                        tap(() => {
+                            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Jelly Bean Updated', life: 3000 });
+                            this.loadJellyBeans(); // Reload jelly beans after update
+                            this.jellyBeanService.triggerJellyBeanUpdate();
+                        }),
+                        catchError((error) => {
+                            console.error('Error updating jelly bean:', error);
+                            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update jelly bean', life: 3000 });
+                            return of(null);
+                        })
+                    ).subscribe();
+                }
+                this.jellyBeanDialog = false;
+                this.jellyBean = {} as IJellyBean;
+        }
     }
 
   hideDialog(): void {
