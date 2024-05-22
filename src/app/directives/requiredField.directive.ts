@@ -27,6 +27,7 @@ export class ReqFieldDirective {
     private addErrorMessage() {
         const htmlElement: HTMLInputElement = this.theEle.nativeElement;
         const errorElement = htmlElement.nextSibling as HTMLElement | null;
+        // We do not want to re-add the message again and again
         if (!(errorElement != null && errorElement.classList.contains('warning-message'))) {
             htmlElement.classList.add('warning');
             const elemToAdd = document.createElement('div');

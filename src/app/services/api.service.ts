@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, tap } from 'rxjs';
-import { IOptions } from '../../interfaces/http';
 import { IJellyBean } from '../../interfaces/sweets';
 
 @Injectable({

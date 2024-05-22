@@ -114,9 +114,6 @@
         <div class="field formGroupField">
           <label class="descLabel" for="description">Description</label>
           <textarea class="fieldBorder" id="description" name="description" appReqField [errorMessage]="'Description is required.'" [ngModelOptions]="{ standalone: true }" pInputTextarea [(ngModel)]="jellyBean.description" rows="3" cols="20"></textarea>
-          <!-- <small class="p-error" *ngIf="submitted && !jellyBean.description">
-            Description is required.
-          </small> -->
         </div>
 
         <div class="field formGroupField">
